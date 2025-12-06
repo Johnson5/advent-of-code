@@ -1,22 +1,43 @@
 package utils
 
 class Grid<T> : Iterable<List<T>> {
-    val grid: MutableList<MutableList<T>>
+    private val grid: MutableList<MutableList<T>>
+    val width: Int get() = grid.firstOrNull()?.size ?: 0
+    val height: Int get() = grid.size
 
     constructor(x: Int, y: Int, initialValue: T) {
-        grid = List(y) { MutableList(x) { initialValue } }.toMutableList()
+        grid = MutableList(y) { MutableList(x) { initialValue } }
     }
 
     constructor(lines: List<String>, converter: (Char) -> T) {
         grid = lines.map { row -> row.map(converter).toMutableList() }.toMutableList()
     }
 
+    private constructor(existing: MutableList<MutableList<T>>) {
+        grid = existing
+    }
+
+
 
     override fun toString() = grid.joinToString("\n") { it.joinToString("") }
 
-    override fun iterator(): Iterator<List<T>> {
-        return grid.iterator()
+    override fun iterator(): Iterator<List<T>> = grid.iterator()
+
+    fun padded(border: Int = 1, with: T): Grid<T> {
+        val newHeight = height + border * 2
+        val newWidth = width + border * 2
+
+        val newGrid = MutableList(newHeight) { y ->
+            MutableList(newWidth) { x ->
+                val origX = x - border
+                val origY = y - border
+                grid.getOrNull(origY)?.getOrNull(origX) ?: with
+            }
+        }
+
+        return Grid(newGrid)
     }
+
 
     fun set(coordinate: Coordinate, value: T) {
         if (isInBounds(coordinate)) {
@@ -26,15 +47,10 @@ class Grid<T> : Iterable<List<T>> {
         }
     }
 
-    fun at(coordinate: Coordinate): T? {
-        return if (isInBounds(coordinate)) grid[coordinate.y][coordinate.x]
-        else null
-    }
+    fun at(x: Int, y: Int): T? = grid.getOrNull(y)?.getOrNull(x)
 
-    fun at(x: Int, y: Int): T? {
-        return if (isInBounds(x, y)) grid[y][x]
-        else null
-    }
+    fun at(c: Coordinate): T? = at(c.x, c.y)
+
 
     fun coordinatesWhere(predicate: (T) -> Boolean): List<Coordinate> {
         return grid.flatMapIndexed { y, row ->
@@ -47,28 +63,23 @@ class Grid<T> : Iterable<List<T>> {
         }
     }
 
-    fun getRow(rowIndex: Int): List<T> {
-        return grid[rowIndex]
-    }
+    fun getRow(rowIndex: Int): List<T> = grid[rowIndex]
 
-    fun getColumn(columnIndex: Int, paddedWith: T): List<T> {
-        return grid.map { row ->
-            row.elementAtOrElse(columnIndex) { paddedWith }
+    fun getColumn(columnIndex: Int): List<T> =
+        grid.map { row -> row[columnIndex] }
+
+    fun getColumn(columnIndex: Int, paddedWith: T): List<T> =
+        grid.map { row -> row.elementAtOrElse(columnIndex) { paddedWith } }
+
+    fun isInBounds(coordinate: Coordinate): Boolean =
+        grid.getOrNull(coordinate.y)?.getOrNull(coordinate.x) != null
+
+    fun isInBounds(x: Int, y: Int): Boolean =
+        grid.getOrNull(y)?.getOrNull(x) != null
+
+    fun indices(): List<Coordinate> =
+        grid.flatMapIndexed { y, row ->
+            row.indices.map { x -> Coordinate(x, y) }
         }
-    }
 
-    fun isInBounds(coordinate: Coordinate): Boolean {
-        return (coordinate.x in grid[0].indices) && coordinate.y in grid.indices
-    }
-
-    fun isInBounds(x: Int, y: Int): Boolean {
-        return (x in grid[0].indices) && y in grid.indices
-    }
-
-    // Returns all indices of the grid (i.e., all coordinates of the elements)
-    fun indices(): List<Coordinate> {
-        return grid.flatMapIndexed { y, row ->
-            row.mapIndexed { x, _ -> Coordinate(x, y) }
-        }
-    }
 }
