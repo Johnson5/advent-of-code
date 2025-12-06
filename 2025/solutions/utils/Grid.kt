@@ -47,6 +47,16 @@ class Grid<T> : Iterable<List<T>> {
         }
     }
 
+    fun getRow(rowIndex: Int): List<T> {
+        return grid[rowIndex]
+    }
+
+    fun getColumn(columnIndex: Int, paddedWith: T): List<T> {
+        return grid.map { row ->
+            row.elementAtOrElse(columnIndex) { paddedWith }
+        }
+    }
+
     fun isInBounds(coordinate: Coordinate): Boolean {
         return (coordinate.x in grid[0].indices) && coordinate.y in grid.indices
     }
