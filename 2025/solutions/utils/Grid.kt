@@ -17,11 +17,35 @@ class Grid<T> : Iterable<List<T>> {
         grid = existing
     }
 
-
-
     override fun toString() = grid.joinToString("\n") { it.joinToString("") }
 
     override fun iterator(): Iterator<List<T>> = grid.iterator()
+
+    fun toPrettyString(
+        columnSeparator: String = " ",
+        rowSeparator: String? = null
+    ): String {
+        if (height == 0 || width == 0) return ""
+
+        val columnWidths = (0 until width).map { col ->
+            grid.maxOf { row -> row[col].toString().length }
+        }
+
+        fun formatRow(row: List<T>): String =
+            row.mapIndexed { col, value ->
+                value.toString().padStart(columnWidths[col])
+            }.joinToString(columnSeparator)
+
+        val formattedRows = grid.map(::formatRow)
+
+        if (rowSeparator == null) return formattedRows.joinToString("\n")
+
+        val divider = columnWidths.joinToString(columnSeparator) { width ->
+            rowSeparator.repeat(width)
+        }
+
+        return formattedRows.joinToString("\n$divider\n")
+    }
 
     fun padded(border: Int = 1, with: T): Grid<T> {
         val newHeight = height + border * 2
@@ -50,6 +74,8 @@ class Grid<T> : Iterable<List<T>> {
     fun at(x: Int, y: Int): T? = grid.getOrNull(y)?.getOrNull(x)
 
     fun at(c: Coordinate): T? = at(c.x, c.y)
+
+    fun atOrDefault(c: Coordinate, default: T): T = at(c.x, c.y) ?: default
 
 
     fun coordinatesWhere(predicate: (T) -> Boolean): List<Coordinate> {
