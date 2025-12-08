@@ -1,8 +1,6 @@
 package aockt.y2025
 
 import io.github.jadarma.aockt.core.Solution
-import utils.Coordinate
-import utils.Grid
 
 object Y2025D05 : Solution {
 

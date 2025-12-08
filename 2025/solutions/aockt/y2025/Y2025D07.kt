@@ -1,7 +1,7 @@
 package aockt.y2025
 
 import io.github.jadarma.aockt.core.Solution
-import utils.Coordinate
+import utils.Coordinate2D
 import utils.Grid
 
 object Y2025D07 : Solution {
@@ -34,13 +34,13 @@ object Y2025D07 : Solution {
     override fun partTwo(input: String): Long {
         val splitter = -1L
         val grid = Grid(parseInput(input)) { if(it == '.') 0L else -1L }
-        val start = Coordinate(grid.first().indexOf(-1L), 0)
+        val start = Coordinate2D(grid.first().indexOf(-1L), 0)
         grid.set(start.left(), 1L)
         grid.set(start.right(), 1L)
         var beams = setOf(start.left(), start.right())
 
         for (rowIndex in 0 until grid.height - 1) {
-            val nextBeams = mutableSetOf<Coordinate>()
+            val nextBeams = mutableSetOf<Coordinate2D>()
             for(beam in beams) {
                 if(grid.at(beam.down()) == splitter) {
                     val leftDown = beam.down().left()

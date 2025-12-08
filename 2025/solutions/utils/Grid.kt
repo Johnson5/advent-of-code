@@ -63,7 +63,7 @@ class Grid<T> : Iterable<List<T>> {
     }
 
 
-    fun set(coordinate: Coordinate, value: T) {
+    fun set(coordinate: Coordinate2D, value: T) {
         if (isInBounds(coordinate)) {
             grid[coordinate.y][coordinate.x] = value
         } else {
@@ -73,15 +73,15 @@ class Grid<T> : Iterable<List<T>> {
 
     fun at(x: Int, y: Int): T? = grid.getOrNull(y)?.getOrNull(x)
 
-    fun at(c: Coordinate): T? = at(c.x, c.y)
+    fun at(c: Coordinate2D): T? = at(c.x, c.y)
 
-    fun atOrDefault(c: Coordinate, default: T): T = at(c.x, c.y) ?: default
+    fun atOrDefault(c: Coordinate2D, default: T): T = at(c.x, c.y) ?: default
 
 
-    fun coordinatesWhere(predicate: (T) -> Boolean): List<Coordinate> {
+    fun coordinatesWhere(predicate: (T) -> Boolean): List<Coordinate2D> {
         return grid.flatMapIndexed { y, row ->
             row.mapIndexedNotNull { x, i ->
-                if (predicate(i)) Coordinate(
+                if (predicate(i)) Coordinate2D(
                     x,
                     y
                 ) else null
@@ -97,15 +97,15 @@ class Grid<T> : Iterable<List<T>> {
     fun getColumn(columnIndex: Int, paddedWith: T): List<T> =
         grid.map { row -> row.elementAtOrElse(columnIndex) { paddedWith } }
 
-    fun isInBounds(coordinate: Coordinate): Boolean =
+    fun isInBounds(coordinate: Coordinate2D): Boolean =
         grid.getOrNull(coordinate.y)?.getOrNull(coordinate.x) != null
 
     fun isInBounds(x: Int, y: Int): Boolean =
         grid.getOrNull(y)?.getOrNull(x) != null
 
-    fun indices(): List<Coordinate> =
+    fun indices(): List<Coordinate2D> =
         grid.flatMapIndexed { y, row ->
-            row.indices.map { x -> Coordinate(x, y) }
+            row.indices.map { x -> Coordinate2D(x, y) }
         }
 
 }

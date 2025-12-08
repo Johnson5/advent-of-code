@@ -1,7 +1,7 @@
 package aockt.y2025
 
 import io.github.jadarma.aockt.core.Solution
-import utils.Coordinate
+import utils.Coordinate2D
 import utils.Grid
 
 object Y2025D04 : Solution {
@@ -11,7 +11,7 @@ object Y2025D04 : Solution {
 
     override fun partOne(input: String): Int {
         val grid = parseInput(input)
-        val o = Coordinate(0, 0)
+        val o = Coordinate2D(0, 0)
         val surrounding = listOf(
             o.up(),
             o.down(),
@@ -36,7 +36,7 @@ object Y2025D04 : Solution {
 
     override fun partTwo(input: String): Int {
         val grid = parseInput(input)
-        val o = Coordinate(0, 0)
+        val o = Coordinate2D(0, 0)
         val surrounding = listOf(
             o.up(),
             o.down(),
