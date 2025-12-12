@@ -5,8 +5,8 @@ class Grid<T> : Iterable<List<T>> {
     val width: Int get() = grid.firstOrNull()?.size ?: 0
     val height: Int get() = grid.size
 
-    constructor(x: Int, y: Int, initialValue: T) {
-        grid = MutableList(y) { MutableList(x) { initialValue } }
+    constructor(width: Int, height: Int, initialValue: T) {
+        grid = MutableList(height) { MutableList(width) { initialValue } }
     }
 
     constructor(lines: List<String>, converter: (Char) -> T) {
@@ -22,7 +22,7 @@ class Grid<T> : Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = grid.iterator()
 
     fun toPrettyString(
-        columnSeparator: String = " ",
+        columnSeparator: String = " | ",
         rowSeparator: String? = null
     ): String {
         if (height == 0 || width == 0) return ""
@@ -68,6 +68,14 @@ class Grid<T> : Iterable<List<T>> {
             grid[coordinate.y][coordinate.x] = value
         } else {
             throw IndexOutOfBoundsException("Coordinate is not in bounds of this grid: $coordinate")
+        }
+    }
+
+    fun set(x: Int, y: Int, value: T) {
+        if (isInBounds(x, y)) {
+            grid[y][x] = value
+        } else {
+            throw IndexOutOfBoundsException("Coordinate is not in bounds of this grid: $x, $y")
         }
     }
 

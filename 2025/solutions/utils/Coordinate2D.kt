@@ -1,5 +1,6 @@
 package utils
 
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 data class Coordinate2D(val x: Int, val y: Int) {
@@ -35,6 +36,10 @@ data class Coordinate2D(val x: Int, val y: Int) {
 
     operator fun minus(other: Coordinate2D): Coordinate2D {
         return Coordinate2D(this.x - other.x, this.y - other.y)
+    }
+
+    fun manhattanDistanceTo(other: Coordinate2D) : Int {
+        return abs(other.x - x) + abs(other.y - y)
     }
 
     fun distanceTo(other: Coordinate2D): Double {
