@@ -97,6 +97,14 @@ class Grid<T> : Iterable<List<T>> {
         }
     }
 
+    fun sumOf(predicate: (T) -> Boolean): Int {
+        return grid.sumOf { row ->
+            row.sumOf { i ->
+                if(predicate(i)) 1 else 0
+            }
+        }
+    }
+
     fun getRow(rowIndex: Int): List<T> = grid[rowIndex]
 
     fun getColumn(columnIndex: Int): List<T> =
